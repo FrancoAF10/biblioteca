@@ -1,7 +1,7 @@
 use biblioteca;
 CREATE VIEW mostrar_ecs AS
 SELECT 
-    r.idrecurso,
+r.idrecurso,
     r.tipo,
     r.titulo,
     r.apublicacion,
@@ -12,8 +12,11 @@ SELECT
     r.estado,
     r.creado,
     r.modificado,
+    c.idcategoria,
     c.categoria,
+    s.idsubcategoria,
     s.subcategoria,
+    e.ideditorial,
     e.editorial,
     e.nacionalidad
 FROM recursos r

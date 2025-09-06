@@ -31,5 +31,7 @@ $routes->get('/recursos', 'RecursosController::index');
 $routes->get('/recursos/registrar', 'RecursosController::crear');
 $routes->get('/api/subcategoria/(:num)', 'SubcategoriaController::getSubcategoriasByCategoria/$1');
 $routes->post('/recursos/guardar', 'RecursosController::guardar');
+$routes->get('/api/recursos/buscarId/(:num)', 'RecursosController::searchById/$1');
+
 
 

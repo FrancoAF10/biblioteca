@@ -75,5 +75,34 @@ class RecursosController extends BaseController
         $recursos->insert( $registro);
         return $this->response->redirect(base_url('/recursos'));  
     }
+    public function searchById($idrecurso="")
+        {
+            $recursos = new Recursos();
 
+            $recurso = $recursos->db->table('mostrar_ecs')
+                        ->where('idrecurso', $idrecurso)
+                        ->get()
+                        ->getRowArray();
+
+            if ($recurso) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'tipo' => $recurso['tipo'],
+                    'titulo' => $recurso['titulo'],
+                    'anio' => $recurso['apublicacion'],
+                    'isbn' => $recurso['isbn'],
+                    'numpaginas' => $recurso['numpaginas'],
+                    'rutaportada' => $recurso['rutaportada'],
+                    'rutarecurso' => $recurso['rutarecurso'],
+                    'estado' => $recurso['estado'],
+                    'creado' => $recurso['creado'],
+                    'modificado' => $recurso['modificado'],
+                    'ideditorial' => $recurso['ideditorial'],
+                    'idcategoria' => $recurso['idcategoria'],
+                    'idsubcategoria' => $recurso['idsubcategoria']
+                ]);
+            } else {
+                return $this->response->setJSON(['success' => false]);
+            }
+    }
 }

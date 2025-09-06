@@ -48,7 +48,7 @@
                 <div class="row mt-2">
                     <div class="col-md-5">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="isbn" name="isbn" required>
+                            <input type="text" class="form-control" id="isbn" name="isbn" maxlength="17" pattern="^[0-9\-]{17}$" required>
                             <label for="">ISBN</label>
                         </div>
                     </div>
@@ -145,12 +145,44 @@
 
 <script>
     document.addEventListener('DOMContentLoaded',()=>{
+        const idrecurso= document.querySelector("#idrecurso");
+        const titulo= document.querySelector("#titulo");
+        const numpaginas= document.querySelector("#numpaginas");
         const categorias=document.querySelector("#categoria")
         const subcategorias=document.querySelector("#subcategoria")
-        const form=document.querySelector("#recursos")
         const tipo=document.querySelector("#tipo")
+        const anio = document.querySelector("#apublicacion")
         const rutarecurso=document.querySelector("#rutarecurso")
-        const anio = document.getElementById("apublicacion");
+        const estado=document.querySelector("#estado")
+        const isbn = document.querySelector("#isbn")
+
+        const buscando = document.querySelector("#searching");
+        const buscar=document.querySelector("#buscar-id")
+        const form=document.querySelector("#recursos")
+
+        //mensaje del toast
+        function showToast(message=``){
+            Swal.fire({
+            text:message,
+            showConfirmButton:false,
+            icon:'info',
+            toast:true,
+            position:'top-end',
+            timer:3000,
+            timerProgressBar:true,
+            background:'#ff5f00',
+            iconColor:'#FFF',
+            color:'#FFF'
+        })
+        }
+
+        isbn.addEventListener("input", () => {
+            isbn.value = isbn.value.replace(/[^0-9-]/g, ""); // elimina lo que no sea número o guion
+            if (isbn.value.length > 17) {
+                isbn.value = isbn.value.slice(0, 17); // solo deja ingresar 17 caracteres
+            }
+        });
+
 
         //para que el ingreso sea solo números
         anio.addEventListener("input", () => {
@@ -178,8 +210,81 @@
             rutarecurso.disabled=false
         }
 
+        async function buscarID() {
+            if (!idrecurso.value) {
+            alert('Escriba ID');
+            return;
+            }
+
+            try {
+            buscando.classList.remove("d-none");
+
+            const response = await fetch(`http://biblioteca.test/api/recursos/buscarId/${idrecurso.value}`, {
+                method: 'GET',
+                headers: { 'Content-type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error en la solicitud');
+            }
+
+            const data = await response.json();
+            buscando.classList.add("d-none");
+
+            if (data.success) {
+                tipo.value = data.tipo;
+                titulo.value = data.titulo;
+                apublicacion.value = data.anio;
+                isbn.value = data.isbn;
+                numpaginas.value = data.numpaginas;
+                estado.value = data.estado;
+                creado.value = data.creado;
+                editorial.value = data.ideditorial;
+                categoria.value = data.idcategoria;
+                if(categoria.value){
+                    try {
+                        const responseSub = await fetch(`<?= base_url()?>api/subcategoria/${categoria.value}`);
+                        const subData = await responseSub.json();
+                        subcategorias.innerHTML = `<option value=''>Seleccione</option>`;
+                        subData.forEach(subc => {
+                            subcategorias.innerHTML += `<option value='${subc.idsubcategoria}'>${subc.subcategoria}</option>`;
+                        });
+                        // asignamos la subcategoría del recurso
+                        if(data.idsubcategoria){
+                            subcategorias.value = data.idsubcategoria;
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        showToast("Error cargando subcategorías");
+                    }
+                }
+            } else {
+                tipo.value = "";
+                titulo.value = "";
+                apublicacion.value = "";
+                isbn.value = "";
+                numpaginas.value ="";
+                rutaportada.value = "";
+                rutarecurso.value = "";
+                estado.value = "";
+                creado.value = "";
+                editorial.value ="";
+                categoria.value = "";
+                subcategoria.value = "";
+                showToast("Recurso no encontrado"); 
+            }
+
+            } catch (error) {
+                console.error(error);
+                buscando.classList.add("d-none"); // para asegurarte de ocultar el loader también en caso de error
+            }
+       }
+
+
+        buscar.addEventListener("click",buscarID)
+
         categorias.addEventListener('change', async()=>{
-            const idcategoria=categoria.value
+            const idcategoria=categorias.value
 
             if(!idcategoria){
                 subcategorias.innerHTML=`<option value''>Seleccione</option>`
@@ -208,6 +313,7 @@
             }
         })//categoria
         
+        //para confirmar el registro de una nueva inserción de datos
       form.addEventListener("submit", function (event) {
         event.preventDefault();
 
