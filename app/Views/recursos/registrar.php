@@ -147,6 +147,7 @@
     document.addEventListener('DOMContentLoaded',()=>{
         const categorias=document.querySelector("#categoria")
         const subcategorias=document.querySelector("#subcategoria")
+        const form=document.querySelector("#recursos")
 
         categorias.addEventListener('change', async()=>{
             const idcategoria=categoria.value
@@ -177,6 +178,25 @@
                 console.error(error)
             }
         })//categoria
+        
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        Swal.fire({
+          title: '¿Registrar?',
+          text: 'Confirme si desea registrar el nuevo recurso',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#0d6efd',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Registrar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });//método fire
+      });//evento submit
     })//DOMContentLoaded
 </script>
 <?= $footer; ?>

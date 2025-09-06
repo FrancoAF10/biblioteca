@@ -241,7 +241,7 @@
 
         Swal.fire({
           title: '¿Registrar?',
-          text: 'Confirme si desea registrar la nueva área.',
+          text: 'Confirme si desea registrar la nueva Persona',
           icon: 'question',
           showCancelButton: true,
           confirmButtonColor: '#0d6efd',
