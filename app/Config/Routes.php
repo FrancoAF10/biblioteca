@@ -26,3 +26,8 @@ $routes->post('/personas/guardar', 'PersonaController::guardar');
 $routes->get('/api/personas/buscardni/(:num)', 'PersonaController::searchByDni/$1');
 $routes->get('/api/ubigeo/provincias/(:num)', 'ProvinciaController::getProvinciasByDepartamento/$1');
 $routes->get('/api/ubigeo/distritos/(:num)', 'DistritoController::getDistritosByProvincia/$1');
+
+$routes->get('/recursos', 'RecursosController::index');
+$routes->get('/recursos/registrar', 'RecursosController::crear');
+$routes->get('/api/subcategoria/(:num)', 'SubcategoriaController::getSubcategoriasByCategoria/$1');
+
