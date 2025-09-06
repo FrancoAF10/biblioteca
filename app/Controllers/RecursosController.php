@@ -29,22 +29,51 @@ class RecursosController extends BaseController
     }
     public function guardar(){
       $recursos=new Recursos();
-      $datos=[
-        "tipo"=>$this->request->getVar('tipo'),
-        "titulo"=>$this->request->getVar('titulo'),
-        "apublicacion"=>$this->request->getVar('apublicacion'),
-        "isbn"=>$this->request->getVar('isbn'),
-        "numpaginas"=>$this->request->getVar('numpaginas'),
-        "rutaportada"=>$this->request->getVar('rutaportada'),
-        "rutarecurso"=>$this->request->getVar('rutarecurso'),
-        "estado"=>$this->request->getVar('estado'),
-        "creado"=>$this->request->getVar('creado'),
-        "modificado"=>$this->request->getVar('modificado'),
-        "ideditorial"=>$this->request->getVar('ideditorial'),
-        "idsubcategoria"=>$this->request->getVar('idsubcategoria'),
-      ];
-      $recursos->insert($datos);
-      return $this->response->redirect(base_url('/recursos'));  
+        $validacion = $this->validate([
+        'rutaportada'  => [
+        'uploaded[rutaportada]',
+        'mime_in[rutaportada,image/jpg,image/jpeg,image/png]',
+        'max_size[rutaportada,1024]'
+        ],
+        'rutarecurso' => [
+        'if_exist',
+        'mime_in[rutarecurso,application/pdf]',
+        'max_size[rutarecurso,2048]'
+        ]
+        ]);
+
+        if (!$validacion){
+        $session = session();
+        $session->setFlashdata('mensaje', 'Revise la información');
+        return redirect()->back()->withInput();
+        }    
+        $imagen = $this->request->getFile('rutaportada');
+        $nuevoNombre = $imagen->getRandomName();
+        $imagen->move('../public/uploads/',  $nuevoNombre);
+
+        $registro=[
+            "tipo"=>$this->request->getVar('tipo'),
+            "titulo"=>$this->request->getVar('titulo'),
+            "apublicacion"=>$this->request->getVar('apublicacion'),
+            "isbn"=>$this->request->getVar('isbn'),
+            "numpaginas"=>$this->request->getVar('numpaginas'),
+            "rutaportada"=>$nuevoNombre,
+            "estado"=>$this->request->getVar('estado'),
+            "creado"=>$this->request->getVar('creado'),
+            "modificado"=>$this->request->getVar('modificado'),
+            "ideditorial"=>$this->request->getVar('ideditorial'),
+            "idsubcategoria"=>$this->request->getVar('idsubcategoria'),
+        ];
+
+        $rutarecurso=$this->request->getFile('rutarecurso');
+
+        if($rutarecurso && $rutarecurso->isValid() && !$rutarecurso->hasMoved()) {
+                $nombrePDF = $rutarecurso->getRandomName();
+                $rutarecurso->move('../public/uploads/', $nombrePDF);
+                $registro['rutarecurso'] = $nombrePDF;
+        }
+        $recursos->insert( $registro);
+        return $this->response->redirect(base_url('/recursos'));  
     }
 
 }

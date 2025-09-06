@@ -47,8 +47,16 @@
                 <td><?=$recurso['apublicacion']?></td>
                 <td><?=$recurso['isbn']?></td>
                 <td><?=$recurso['numpaginas']?></td>
-                <td><?=$recurso['rutaportada']?></td>
-                <td><?=$recurso['rutarecurso']?></td>
+                <td>
+                    <img src="<?= base_url("uploads/") ?><?=$recurso['rutaportada'] ?>" alt="Portada" class="img-thumbnail" style="width: 120px;" >
+                </td>                
+                <td>
+                    <?php if (!empty($recurso['rutarecurso'])): ?>
+                        <a href="<?= base_url('uploads/') . $recurso['rutarecurso']?>" target="_blank" class="btn btn-sm btn-primary">VER PDF</a>
+                    <?php else: ?>
+                        <span class="text-muted">No hay PDF</span>
+                    <?php endif; ?>
+                </td>
                 <td><?=$recurso['estado']?></td>
                 <td><?=$recurso['creado']?></td>
                 <td><?=$recurso['categoria']?></td>

@@ -8,7 +8,7 @@
             <a href="<?=base_url('recursos')?>">Volver</a>
         </div>
         <br>
-        <form action="<?=base_url('recursos/guardar')?>" method="post" id="recursos">
+        <form method="POST" action="<?=base_url('recursos/guardar')?>"  id="recursos" enctype="multipart/form-data">
             <div class="card">
             <div class="card-header">Registrar</div>
             <div class="card-body">
@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <select  class="form-select" name="tipo" id="tipo">
+                            <select  class="form-select" name="tipo" id="tipo" required>
                                 <option value="">Seleccione</option>
                                 <option value="digital">Digital</option>
                                 <option value="fisico">Fisico</option>
@@ -34,13 +34,13 @@
                     </div>  
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="titulo" name="titulo">
+                            <input type="text" class="form-control" id="titulo" name="titulo" required>
                             <label for="">Titulo</label>
                         </div>
                     </div>            
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <input type="number" class="form-control" id="apublicacion" name="apublicacion">
+                            <input type="text" class="form-control" id="apublicacion" name="apublicacion" maxlength="4" pattern="^[0-9]{4}$" required>
                             <label for="">Año Publicación</label>
                         </div>
                     </div>
@@ -48,33 +48,33 @@
                 <div class="row mt-2">
                     <div class="col-md-5">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="isbn" name="isbn">
+                            <input type="text" class="form-control" id="isbn" name="isbn" required>
                             <label for="">ISBN</label>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-floating">
-                            <input type="number " class="form-control" id="numpaginas" name="numpaginas">
+                            <input type="number" class="form-control" id="numpaginas" name="numpaginas" required>
                             <label for="">N° Paginas</label>
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="rutaportada" name="rutaportada">
-                            <label for="">Ruta de portada</label>
+                        <input type="file" class="form-control" name="rutaportada" id="rutaportada" required>
+                            <label for="rutaportada">Ruta de portada</label>
                         </div>
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="rutarecurso" name="rutarecurso">
-                            <label for="">Ruta Recurso</label>
+                        <input type="file" class="form-control" id="rutarecurso" name="rutarecurso" accept="application/pdf" required>
+                        <label for="">Ruta Recurso</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <select name="estado" id="estado" class="form-select">
+                            <select name="estado" id="estado" class="form-select" required>
                                 <option value="">Seleccione</option>
                                 <option value="bueno">Bueno</option>
                                 <option value="regular">Regular</option>
@@ -101,7 +101,7 @@
                 <div class="row mt-2">
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <select  class="form-select" name="ideditorial" id="editorial">
+                            <select  class="form-select" name="ideditorial" id="editorial" required>
                                 <option value="">Seleccione</option>
                                 <?php foreach($editoriales as $editorial):?>
                                     <option value="<?=$editorial['ideditorial']?>"><?=$editorial['editorial']?> (<?=$editorial['nacionalidad']?>)</option>
@@ -112,7 +112,7 @@
                     </div>  
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <select  class="form-select" name="idcategoria" id="categoria">
+                            <select  class="form-select" name="idcategoria" id="categoria" required>
                                 <option value="">Seleccione</option>
                                     <?php foreach($categorias as $categoria):?>
                                         <option value="<?=$categoria['idcategoria']?>"><?=$categoria['categoria']?></option>
@@ -123,7 +123,7 @@
                     </div>  
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <select  class="form-select" name="idsubcategoria" id="subcategoria">
+                            <select  class="form-select" name="idsubcategoria" id="subcategoria" required>
                                 <option value="">Seleccione</option>
                             </select>
                             <label for="">Subcategoria</label>
@@ -148,6 +148,35 @@
         const categorias=document.querySelector("#categoria")
         const subcategorias=document.querySelector("#subcategoria")
         const form=document.querySelector("#recursos")
+        const tipo=document.querySelector("#tipo")
+        const rutarecurso=document.querySelector("#rutarecurso")
+        const anio = document.getElementById("apublicacion");
+
+        //para que el ingreso sea solo números
+        anio.addEventListener("input", () => {
+        anio.value = anio.value.replace(/\D/g, ""); //para que no admina letras(elimina)    
+        anio.value = anio.value.slice(0, 4); 
+        });
+
+        tipo.addEventListener("change",()=>{
+            if(tipo.value==="digital"){
+                rutarecurso.disabled=false
+            }else if(tipo.value==="fisico"){
+                rutarecurso.disabled=true
+                rutarecurso.value=""
+            }else{
+                rutarecurso.disabled=true,
+                rutarecurso.value=""
+            }
+        })//tipo/dependiendo del select seleccionado(fisico-digital)
+
+        //Para que inicie bloqueado al entrar o recargar la pagina
+        if(tipo.value==="" || tipo.value==="fisico"){
+            rutarecurso.disabled=true
+            rutarecurso.value=""
+        }else{
+            rutarecurso.disabled=false
+        }
 
         categorias.addEventListener('change', async()=>{
             const idcategoria=categoria.value
