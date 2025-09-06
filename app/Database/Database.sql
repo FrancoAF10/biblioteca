@@ -86,4 +86,5 @@ VALUES
 ('digital', 'Sistemas Operativos: Principios y Diseño', 2018, '978-612-0000088', 450, '/img/portadas/sistemas.jpg', '/recursos/sistemas.pdf', 'bueno', '2025-09-05', NULL, 8, 2),
 ('fisico', 'Introducción a los Lenguajes de Programación', 2022, '978-612-0000099', 380, '/img/portadas/programacion.jpg', '/recursos/programacion.pdf', 'bueno', '2025-09-05', NULL, 9, 3);
 select * from recursos;
+delete from recursos  where idrecurso=13;
 

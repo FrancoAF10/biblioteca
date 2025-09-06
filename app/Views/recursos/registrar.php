@@ -101,10 +101,10 @@
                 <div class="row mt-2">
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <select  class="form-select" name="editorial" id="editorial">
+                            <select  class="form-select" name="ideditorial" id="editorial">
                                 <option value="">Seleccione</option>
                                 <?php foreach($editoriales as $editorial):?>
-                                    <option value="<?=$editorial['ideditorial']?>"><?=$editorial['editorial']?></option>
+                                    <option value="<?=$editorial['ideditorial']?>"><?=$editorial['editorial']?> (<?=$editorial['nacionalidad']?>)</option>
                                 <?php endforeach;?>
                             </select>
                             <label for="">Editorial</label>
@@ -112,7 +112,7 @@
                     </div>  
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <select  class="form-select" name="categoria" id="categoria">
+                            <select  class="form-select" name="idcategoria" id="categoria">
                                 <option value="">Seleccione</option>
                                     <?php foreach($categorias as $categoria):?>
                                         <option value="<?=$categoria['idcategoria']?>"><?=$categoria['categoria']?></option>
@@ -123,7 +123,7 @@
                     </div>  
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <select  class="form-select" name="subcategoria" id="subcategoria">
+                            <select  class="form-select" name="idsubcategoria" id="subcategoria">
                                 <option value="">Seleccione</option>
                             </select>
                             <label for="">Subcategoria</label>
@@ -170,7 +170,7 @@
                 if(data.length){
                     subcategorias.innerHTML=`<option value=''>Seleccione</option>`
                     data.forEach(subcategoria => {
-                        subcategorias.innerHTML+=`<option value='${subcategoria.idsubcategorias}'>${subcategoria.subcategoria}</option>`
+                        subcategorias.innerHTML+=`<option value='${subcategoria.idsubcategoria}'>${subcategoria.subcategoria}</option>`
                     });
                 }
             }catch(error){

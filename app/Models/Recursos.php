@@ -17,7 +17,9 @@ class Recursos extends Model{
                               "rutarecurso",
                               "estado",
                               "creado",
-                              "modificado"];
+                              "modificado",
+                              "ideditorial",
+                              "idsubcategoria"];
   public function vistar_ECS(){
     $query =$this->db->query("SELECT * FROM mostrar_ecs ORDER BY idrecurso ASC");
     return $query->getResultArray();
